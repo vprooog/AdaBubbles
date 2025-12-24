@@ -1,0 +1,9 @@
+# Ada Bubbles - robots.txt
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://ada-bubbles.com/sitemap.xml
+
+# Не индексировать служебные файлы
+Disallow: /*.json$

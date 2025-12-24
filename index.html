@@ -1,0 +1,2912 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ada Bubbles | Digital Muse</title>
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌸</text></svg>">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --gold: #d4af37;
+            --gold-light: #f4e4bc;
+            --gold-dark: #b8960c;
+            --rose: #e91e63;
+            --rose-light: #f8bbd9;
+            --rose-dark: #c2185b;
+            --black: #0a0a0a;
+            --black-light: #1a1a1a;
+            --black-card: #141414;
+            --white: #fafafa;
+            --gray: #888;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        *::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        *::-webkit-scrollbar-track {
+            background: var(--black);
+        }
+        
+        *::-webkit-scrollbar-thumb {
+            background: var(--gold);
+            border-radius: 3px;
+        }
+        
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background: var(--black);
+            color: var(--white);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        
+        .font-elegant {
+            font-family: 'Playfair Display', serif;
+        }
+        
+        /* ============================================
+           WELCOME SCREEN - Проверка возраста и языка
+           ============================================ */
+        
+        #welcomeScreen {
+            position: fixed;
+            inset: 0;
+            z-index: 9999;
+            background: var(--black);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+        }
+        
+        #welcomeScreen.hidden {
+            display: none;
+        }
+        
+        .welcome-bg {
+            position: absolute;
+            inset: 0;
+            background: 
+                radial-gradient(ellipse at top, rgba(212, 175, 55, 0.1) 0%, transparent 50%),
+                radial-gradient(ellipse at bottom, rgba(233, 30, 99, 0.05) 0%, transparent 50%);
+        }
+        
+        .welcome-content {
+            position: relative;
+            text-align: center;
+            padding: 3rem;
+            max-width: 500px;
+        }
+        
+        .brand-logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 4rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--gold-light), var(--gold), var(--gold-dark));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+            letter-spacing: 0.1em;
+        }
+        
+        .brand-tagline {
+            color: var(--rose);
+            font-size: 0.9rem;
+            letter-spacing: 0.3em;
+            text-transform: uppercase;
+            margin-bottom: 3rem;
+        }
+        
+        .decorative-line {
+            width: 60px;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--gold), transparent);
+            margin: 0 auto 2rem;
+        }
+        
+        .welcome-step {
+            display: none;
+        }
+        
+        .welcome-step.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .language-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 2rem;
+        }
+        
+        .lang-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 1rem 2rem;
+            background: var(--black-card);
+            border: 1px solid var(--gold);
+            border-radius: 4px;
+            color: var(--white);
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .lang-btn:hover {
+            background: var(--gold);
+            color: var(--black);
+        }
+        
+        .lang-btn span.flag {
+            font-size: 1.5rem;
+        }
+        
+        .age-warning {
+            background: var(--black-card);
+            border: 1px solid var(--rose-dark);
+            border-radius: 8px;
+            padding: 2rem;
+            margin-top: 2rem;
+        }
+        
+        .age-warning h3 {
+            color: var(--rose);
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .age-warning p {
+            color: var(--gray);
+            font-size: 0.9rem;
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+        }
+        
+        .age-checkbox {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+            text-align: left;
+            margin-bottom: 1.5rem;
+        }
+        
+        .age-checkbox input {
+            width: 20px;
+            height: 20px;
+            accent-color: var(--gold);
+            margin-top: 2px;
+        }
+        
+        .age-checkbox label {
+            font-size: 0.85rem;
+            color: var(--gray);
+            line-height: 1.5;
+        }
+        
+        .enter-btn {
+            width: 100%;
+            padding: 1rem 2rem;
+            background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+            border: none;
+            border-radius: 4px;
+            color: var(--black);
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 600;
+            font-size: 1rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .enter-btn:hover:not(:disabled) {
+            box-shadow: 0 0 30px rgba(212, 175, 55, 0.4);
+            transform: translateY(-2px);
+        }
+        
+        .enter-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .exit-btn {
+            background: transparent;
+            border: 1px solid var(--gray);
+            color: var(--gray);
+            margin-top: 1rem;
+        }
+        
+        .exit-btn:hover {
+            border-color: var(--rose);
+            color: var(--rose);
+            box-shadow: none;
+            transform: none;
+        }
+        
+        /* ============================================
+           MAIN SITE
+           ============================================ */
+        
+        #mainSite {
+            display: none;
+        }
+        
+        #mainSite.visible {
+            display: block;
+        }
+        
+        /* Header */
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            background: rgba(10, 10, 10, 0.95);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+        }
+        
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1rem 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .header-logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--gold-light), var(--gold));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: 0.05em;
+        }
+        
+        .header-nav {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+        }
+        
+        .nav-link {
+            color: var(--gray);
+            text-decoration: none;
+            font-size: 0.85rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            transition: color 0.3s ease;
+            position: relative;
+        }
+        
+        .nav-link:hover, .nav-link.active {
+            color: var(--gold);
+        }
+        
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 1px;
+            background: var(--gold);
+            transition: width 0.3s ease;
+        }
+        
+        .nav-link:hover::after, .nav-link.active::after {
+            width: 100%;
+        }
+        
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+        
+        .coins-display {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: linear-gradient(135deg, rgba(212, 175, 55, 0.1), rgba(212, 175, 55, 0.05));
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .coins-display:hover {
+            border-color: var(--gold);
+            box-shadow: 0 0 20px rgba(212, 175, 55, 0.2);
+        }
+        
+        .coin-icon {
+            width: 20px;
+            height: 20px;
+            background: linear-gradient(135deg, var(--gold-light), var(--gold));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+        }
+        
+        .coins-amount {
+            font-weight: 600;
+            color: var(--gold);
+        }
+        
+        .lang-switch {
+            background: none;
+            border: 1px solid var(--gray);
+            color: var(--gray);
+            padding: 0.4rem 0.8rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .lang-switch:hover {
+            border-color: var(--gold);
+            color: var(--gold);
+        }
+        
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            padding: 6rem 2rem 4rem;
+        }
+        
+        .hero-bg {
+            position: absolute;
+            inset: 0;
+            background: 
+                radial-gradient(ellipse at center top, rgba(212, 175, 55, 0.08) 0%, transparent 50%),
+                radial-gradient(ellipse at center bottom, rgba(233, 30, 99, 0.05) 0%, transparent 50%);
+        }
+        
+        .hero-content {
+            position: relative;
+            text-align: center;
+            max-width: 800px;
+        }
+        
+        .avatar-container {
+            margin-bottom: 2rem;
+        }
+        
+        .avatar-ring {
+            width: 200px;
+            height: 200px;
+            margin: 0 auto;
+            padding: 4px;
+            background: linear-gradient(135deg, var(--gold), var(--rose), var(--gold));
+            border-radius: 50%;
+            animation: rotate-gradient 4s linear infinite;
+        }
+        
+        @keyframes rotate-gradient {
+            0% { filter: hue-rotate(0deg); }
+            100% { filter: hue-rotate(360deg); }
+        }
+        
+        .avatar-inner {
+            width: 100%;
+            height: 100%;
+            background: var(--black);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+        
+        .avatar-placeholder {
+            font-size: 4rem;
+            background: linear-gradient(135deg, var(--gold), var(--rose));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-family: 'Playfair Display', serif;
+            font-weight: 700;
+        }
+        
+        .hero-name {
+            font-family: 'Playfair Display', serif;
+            font-size: 3.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(135deg, var(--white), var(--gold-light));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .hero-title {
+            color: var(--rose);
+            font-size: 0.9rem;
+            letter-spacing: 0.3em;
+            text-transform: uppercase;
+            margin-bottom: 1.5rem;
+        }
+        
+        .hero-bio {
+            color: var(--gray);
+            font-size: 1.1rem;
+            line-height: 1.8;
+            max-width: 600px;
+            margin: 0 auto 2rem;
+        }
+        
+        .hero-stats {
+            display: flex;
+            justify-content: center;
+            gap: 3rem;
+            margin-bottom: 2.5rem;
+            padding: 1.5rem 0;
+            border-top: 1px solid rgba(212, 175, 55, 0.2);
+            border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+        }
+        
+        .stat-item {
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--gold);
+        }
+        
+        .stat-label {
+            font-size: 0.75rem;
+            color: var(--gray);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+        
+        .hero-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .btn-primary {
+            padding: 1rem 2.5rem;
+            background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+            border: none;
+            border-radius: 4px;
+            color: var(--black);
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 600;
+            font-size: 0.85rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary:hover {
+            box-shadow: 0 0 30px rgba(212, 175, 55, 0.4);
+            transform: translateY(-2px);
+        }
+        
+        .btn-secondary {
+            padding: 1rem 2.5rem;
+            background: transparent;
+            border: 1px solid var(--rose);
+            border-radius: 4px;
+            color: var(--rose);
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 600;
+            font-size: 0.85rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-secondary:hover {
+            background: var(--rose);
+            color: var(--white);
+            box-shadow: 0 0 30px rgba(233, 30, 99, 0.3);
+        }
+        
+        /* Content Section */
+        .content-section {
+            padding: 4rem 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .section-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+        
+        .section-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
+            color: var(--white);
+            margin-bottom: 0.5rem;
+        }
+        
+        .section-subtitle {
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+        
+        /* Content Grid */
+        .content-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 2rem;
+        }
+        
+        .content-card {
+            background: var(--black-card);
+            border: 1px solid rgba(212, 175, 55, 0.1);
+            border-radius: 8px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .content-card:hover {
+            border-color: rgba(212, 175, 55, 0.3);
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+        
+        .card-image {
+            position: relative;
+            aspect-ratio: 4/5;
+            background: linear-gradient(135deg, var(--black-light), var(--black-card));
+            overflow: hidden;
+        }
+        
+        .card-image-placeholder {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4rem;
+            background: linear-gradient(135deg, rgba(233, 30, 99, 0.1), rgba(212, 175, 55, 0.1));
+        }
+        
+        .card-locked {
+            position: relative;
+        }
+        
+        .card-locked .card-image-placeholder {
+            filter: blur(20px);
+        }
+        
+        .lock-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(10, 10, 10, 0.7);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+        }
+        
+        .lock-icon {
+            font-size: 3rem;
+        }
+        
+        .unlock-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+            border: none;
+            border-radius: 4px;
+            color: var(--black);
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 600;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .unlock-btn:hover {
+            box-shadow: 0 0 20px rgba(212, 175, 55, 0.4);
+            transform: scale(1.05);
+        }
+        
+        .card-badge {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            padding: 0.4rem 0.8rem;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        
+        .badge-free {
+            background: rgba(76, 175, 80, 0.9);
+            color: white;
+        }
+        
+        .badge-premium {
+            background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+            color: var(--black);
+        }
+        
+        .badge-exclusive {
+            background: linear-gradient(135deg, var(--rose), var(--rose-dark));
+            color: white;
+        }
+        
+        .card-info {
+            padding: 1.25rem;
+        }
+        
+        .card-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .card-meta {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            color: var(--gray);
+            font-size: 0.8rem;
+        }
+        
+        .card-date {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .card-likes {
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+        
+        .card-likes:hover {
+            color: var(--rose);
+        }
+        
+        /* Subscription Section */
+        .subscription-section {
+            padding: 6rem 2rem;
+            background: linear-gradient(180deg, transparent, rgba(212, 175, 55, 0.03), transparent);
+        }
+        
+        .subscription-content {
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: center;
+        }
+        
+        .subscription-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+        
+        .sub-card {
+            background: var(--black-card);
+            border: 1px solid rgba(212, 175, 55, 0.2);
+            border-radius: 12px;
+            padding: 2rem;
+            transition: all 0.3s ease;
+        }
+        
+        .sub-card:hover {
+            border-color: var(--gold);
+            transform: translateY(-5px);
+        }
+        
+        .sub-card.featured {
+            border-color: var(--gold);
+            background: linear-gradient(135deg, rgba(212, 175, 55, 0.1), transparent);
+            position: relative;
+        }
+        
+        .sub-card.featured::before {
+            content: 'POPULAR';
+            position: absolute;
+            top: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--gold);
+            color: var(--black);
+            font-size: 0.65rem;
+            font-weight: 700;
+            padding: 0.3rem 1rem;
+            border-radius: 20px;
+            letter-spacing: 0.1em;
+        }
+        
+        .sub-coins {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .sub-coins .coin-icon {
+            width: 30px;
+            height: 30px;
+            font-size: 14px;
+        }
+        
+        .sub-coins-amount {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--gold);
+        }
+        
+        .sub-price {
+            color: var(--gray);
+            font-size: 1.25rem;
+            margin-bottom: 1rem;
+        }
+        
+        .sub-bonus {
+            color: var(--rose);
+            font-size: 0.85rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .sub-buy-btn {
+            width: 100%;
+            padding: 0.875rem;
+            background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+            border: none;
+            border-radius: 4px;
+            color: var(--black);
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 600;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .sub-buy-btn:hover {
+            box-shadow: 0 0 20px rgba(212, 175, 55, 0.4);
+        }
+        
+        /* Footer */
+        footer {
+            padding: 3rem 2rem;
+            border-top: 1px solid rgba(212, 175, 55, 0.1);
+            text-align: center;
+        }
+        
+        .footer-logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            background: linear-gradient(135deg, var(--gold-light), var(--gold));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 1rem;
+        }
+        
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .footer-links a {
+            color: var(--gray);
+            text-decoration: none;
+            font-size: 0.85rem;
+            transition: color 0.3s ease;
+        }
+        
+        .footer-links a:hover {
+            color: var(--gold);
+        }
+        
+        .footer-copy {
+            color: var(--gray);
+            font-size: 0.75rem;
+        }
+        
+        /* ============================================
+           CHAT INTERFACE
+           ============================================ */
+        .chat-container {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            z-index: 150;
+        }
+        
+        .chat-toggle {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--gold), var(--rose));
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            box-shadow: 0 5px 30px rgba(212, 175, 55, 0.4);
+            transition: all 0.3s ease;
+        }
+        
+        .chat-toggle:hover {
+            transform: scale(1.1);
+            box-shadow: 0 5px 40px rgba(212, 175, 55, 0.6);
+        }
+        
+        .chat-toggle.has-notification::after {
+            content: '';
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            width: 12px;
+            height: 12px;
+            background: var(--rose);
+            border-radius: 50%;
+            border: 2px solid var(--black);
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.2); opacity: 0.7; }
+        }
+        
+        .chat-window {
+            position: absolute;
+            bottom: 80px;
+            right: 0;
+            width: 380px;
+            max-width: calc(100vw - 2rem);
+            height: 500px;
+            max-height: 70vh;
+            background: var(--black-card);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            border-radius: 16px;
+            display: none;
+            flex-direction: column;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+        }
+        
+        .chat-window.active {
+            display: flex;
+            animation: slideUp 0.3s ease;
+        }
+        
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .chat-header {
+            padding: 1rem 1.25rem;
+            background: linear-gradient(135deg, rgba(212, 175, 55, 0.1), transparent);
+            border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        
+        .chat-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--gold), var(--rose));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+            font-weight: 700;
+            font-family: 'Playfair Display', serif;
+        }
+        
+        .chat-header-info h4 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1rem;
+            color: var(--gold);
+        }
+        
+        .chat-header-info span {
+            font-size: 0.75rem;
+            color: #4ade80;
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+        
+        .chat-header-info span::before {
+            content: '';
+            width: 6px;
+            height: 6px;
+            background: #4ade80;
+            border-radius: 50%;
+        }
+        
+        .chat-close {
+            margin-left: auto;
+            background: none;
+            border: none;
+            color: var(--gray);
+            font-size: 1.25rem;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+        
+        .chat-close:hover {
+            color: var(--rose);
+        }
+        
+        .chat-messages {
+            flex: 1;
+            padding: 1rem;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+        
+        .message {
+            max-width: 85%;
+            padding: 0.75rem 1rem;
+            border-radius: 16px;
+            font-size: 0.9rem;
+            line-height: 1.5;
+            animation: messageIn 0.3s ease;
+        }
+        
+        @keyframes messageIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .message.ada {
+            background: linear-gradient(135deg, rgba(212, 175, 55, 0.15), rgba(233, 30, 99, 0.1));
+            border: 1px solid rgba(212, 175, 55, 0.2);
+            align-self: flex-start;
+            border-bottom-left-radius: 4px;
+        }
+        
+        .message.user {
+            background: var(--rose);
+            color: white;
+            align-self: flex-end;
+            border-bottom-right-radius: 4px;
+        }
+        
+        .message-time {
+            font-size: 0.65rem;
+            color: var(--gray);
+            margin-top: 0.25rem;
+        }
+        
+        .typing-indicator {
+            display: flex;
+            gap: 4px;
+            padding: 0.75rem 1rem;
+            background: rgba(212, 175, 55, 0.1);
+            border-radius: 16px;
+            align-self: flex-start;
+            max-width: 60px;
+        }
+        
+        .typing-indicator span {
+            width: 8px;
+            height: 8px;
+            background: var(--gold);
+            border-radius: 50%;
+            animation: typing 1.4s infinite;
+        }
+        
+        .typing-indicator span:nth-child(2) { animation-delay: 0.2s; }
+        .typing-indicator span:nth-child(3) { animation-delay: 0.4s; }
+        
+        @keyframes typing {
+            0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
+            30% { transform: translateY(-4px); opacity: 1; }
+        }
+        
+        .chat-input-area {
+            padding: 1rem;
+            border-top: 1px solid rgba(212, 175, 55, 0.2);
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .chat-input {
+            flex: 1;
+            padding: 0.75rem 1rem;
+            background: var(--black);
+            border: 1px solid rgba(212, 175, 55, 0.2);
+            border-radius: 25px;
+            color: var(--white);
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.9rem;
+            outline: none;
+            transition: border-color 0.3s ease;
+        }
+        
+        .chat-input:focus {
+            border-color: var(--gold);
+        }
+        
+        .chat-input::placeholder {
+            color: var(--gray);
+        }
+        
+        .chat-send {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+        
+        .chat-send:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 20px rgba(212, 175, 55, 0.4);
+        }
+        
+        .chat-send svg {
+            width: 18px;
+            height: 18px;
+            fill: var(--black);
+        }
+        
+        .quick-replies {
+            padding: 0.5rem 1rem 0;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+        
+        .quick-reply {
+            padding: 0.4rem 0.75rem;
+            background: transparent;
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            border-radius: 15px;
+            color: var(--gold);
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .quick-reply:hover {
+            background: var(--gold);
+            color: var(--black);
+        }
+        
+        /* ============================================
+           REGISTRATION MODAL
+           ============================================ */
+        .auth-modal .modal-content {
+            max-width: 420px;
+        }
+        
+        .auth-tabs {
+            display: flex;
+            margin-bottom: 1.5rem;
+            border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+        }
+        
+        .auth-tab {
+            flex: 1;
+            padding: 0.75rem;
+            background: none;
+            border: none;
+            color: var(--gray);
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .auth-tab.active {
+            color: var(--gold);
+        }
+        
+        .auth-tab.active::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: var(--gold);
+        }
+        
+        .auth-form {
+            display: none;
+        }
+        
+        .auth-form.active {
+            display: block;
+        }
+        
+        .form-group {
+            margin-bottom: 1.25rem;
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--gray);
+            font-size: 0.85rem;
+        }
+        
+        .form-input {
+            width: 100%;
+            padding: 0.875rem 1rem;
+            background: var(--black);
+            border: 1px solid rgba(212, 175, 55, 0.2);
+            border-radius: 8px;
+            color: var(--white);
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.95rem;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+        
+        .form-input:focus {
+            border-color: var(--gold);
+            box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.1);
+        }
+        
+        .form-input::placeholder {
+            color: #555;
+        }
+        
+        .form-checkbox {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-checkbox input {
+            width: 18px;
+            height: 18px;
+            accent-color: var(--gold);
+            margin-top: 2px;
+        }
+        
+        .form-checkbox label {
+            font-size: 0.8rem;
+            color: var(--gray);
+            line-height: 1.5;
+        }
+        
+        .form-checkbox label a {
+            color: var(--gold);
+            text-decoration: none;
+        }
+        
+        .auth-submit {
+            width: 100%;
+            padding: 1rem;
+            background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+            border: none;
+            border-radius: 8px;
+            color: var(--black);
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 600;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .auth-submit:hover:not(:disabled) {
+            box-shadow: 0 0 30px rgba(212, 175, 55, 0.4);
+            transform: translateY(-2px);
+        }
+        
+        .auth-submit:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .auth-divider {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin: 1.5rem 0;
+            color: var(--gray);
+            font-size: 0.8rem;
+        }
+        
+        .auth-divider::before,
+        .auth-divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: rgba(212, 175, 55, 0.2);
+        }
+        
+        .social-login {
+            display: flex;
+            gap: 1rem;
+        }
+        
+        .social-btn {
+            flex: 1;
+            padding: 0.75rem;
+            background: var(--black);
+            border: 1px solid rgba(212, 175, 55, 0.2);
+            border-radius: 8px;
+            color: var(--white);
+            font-size: 1.25rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .social-btn:hover {
+            border-color: var(--gold);
+            background: rgba(212, 175, 55, 0.1);
+        }
+        
+        /* User Menu */
+        .user-menu {
+            position: relative;
+        }
+        
+        .user-avatar-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--gold), var(--rose));
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--black);
+            transition: all 0.3s ease;
+        }
+        
+        .user-avatar-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 20px rgba(212, 175, 55, 0.4);
+        }
+        
+        .user-dropdown {
+            position: absolute;
+            top: calc(100% + 10px);
+            right: 0;
+            width: 220px;
+            background: var(--black-card);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            border-radius: 12px;
+            padding: 0.5rem;
+            display: none;
+            z-index: 100;
+        }
+        
+        .user-dropdown.active {
+            display: block;
+            animation: fadeIn 0.2s ease;
+        }
+        
+        .user-dropdown-header {
+            padding: 1rem;
+            border-bottom: 1px solid rgba(212, 175, 55, 0.1);
+            margin-bottom: 0.5rem;
+        }
+        
+        .user-dropdown-name {
+            font-family: 'Playfair Display', serif;
+            font-size: 1rem;
+            color: var(--gold);
+            margin-bottom: 0.25rem;
+        }
+        
+        .user-dropdown-email {
+            font-size: 0.75rem;
+            color: var(--gray);
+        }
+        
+        .user-dropdown-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 1rem;
+            color: var(--white);
+            text-decoration: none;
+            font-size: 0.85rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .user-dropdown-item:hover {
+            background: rgba(212, 175, 55, 0.1);
+            color: var(--gold);
+        }
+        
+        .user-dropdown-item.logout {
+            color: var(--rose);
+            border-top: 1px solid rgba(212, 175, 55, 0.1);
+            margin-top: 0.5rem;
+            padding-top: 0.75rem;
+        }
+        
+        .login-btn {
+            padding: 0.5rem 1.25rem;
+            background: transparent;
+            border: 1px solid var(--gold);
+            border-radius: 25px;
+            color: var(--gold);
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .login-btn:hover {
+            background: var(--gold);
+            color: var(--black);
+        }
+        
+        /* Premium Messages Lock */
+        .chat-locked {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            text-align: center;
+        }
+        
+        .chat-locked-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+        
+        .chat-locked h4 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.25rem;
+            color: var(--gold);
+            margin-bottom: 0.5rem;
+        }
+        
+        .chat-locked p {
+            color: var(--gray);
+            font-size: 0.85rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        /* Modals */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 200;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+        
+        .modal-overlay.active {
+            display: flex;
+        }
+        
+        .modal-content {
+            background: var(--black-card);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            border-radius: 12px;
+            padding: 2rem;
+            max-width: 500px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            animation: modalIn 0.3s ease;
+        }
+        
+        @keyframes modalIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        
+        .modal-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1.5rem;
+        }
+        
+        .modal-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            color: var(--gold);
+        }
+        
+        .modal-close {
+            background: none;
+            border: none;
+            color: var(--gray);
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+        
+        .modal-close:hover {
+            color: var(--rose);
+        }
+        
+        /* Toast */
+        .toast {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: var(--black-card);
+            border: 1px solid var(--gold);
+            border-radius: 8px;
+            padding: 1rem 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            z-index: 300;
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.3s ease;
+        }
+        
+        .toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+        
+        .toast-icon {
+            font-size: 1.25rem;
+        }
+        
+        .toast-message {
+            font-size: 0.9rem;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header-nav {
+                display: none;
+            }
+            
+            .hero-name {
+                font-size: 2.5rem;
+            }
+            
+            .hero-stats {
+                gap: 1.5rem;
+            }
+            
+            .stat-value {
+                font-size: 1.5rem;
+            }
+            
+            .content-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .brand-logo {
+                font-size: 3rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    
+    <!-- ==========================================
+         WELCOME SCREEN - Выбор языка и 18+
+         ========================================== -->
+    <div id="welcomeScreen">
+        <div class="welcome-bg"></div>
+        <div class="welcome-content">
+            <!-- Шаг 1: Выбор языка -->
+            <div id="step1" class="welcome-step active">
+                <div class="brand-logo">Ada Bubbles</div>
+                <div class="brand-tagline">Digital Muse</div>
+                <div class="decorative-line"></div>
+                
+                <p style="color: var(--gray); margin-bottom: 1rem;">Select your language / Выберите язык</p>
+                
+                <div class="language-buttons">
+                    <button class="lang-btn" onclick="selectLanguage('en')">
+                        <span class="flag">🇬🇧</span>
+                        <span>English</span>
+                    </button>
+                    <button class="lang-btn" onclick="selectLanguage('ru')">
+                        <span class="flag">🇷🇺</span>
+                        <span>Русский</span>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Шаг 2: Подтверждение возраста -->
+            <div id="step2" class="welcome-step">
+                <div class="brand-logo">Ada Bubbles</div>
+                <div class="brand-tagline" id="taglineText">Digital Muse</div>
+                <div class="decorative-line"></div>
+                
+                <div class="age-warning">
+                    <h3 id="ageTitle">Age Verification</h3>
+                    <p id="ageText">This website contains adult content intended for individuals 18 years of age or older. By entering, you confirm that you are of legal age and agree to view such content.</p>
+                    
+                    <div class="age-checkbox">
+                        <input type="checkbox" id="ageConfirm" onchange="checkAgeConfirm()">
+                        <label for="ageConfirm" id="ageLabel">I confirm that I am 18 years of age or older and I agree to view adult content</label>
+                    </div>
+                    
+                    <button class="enter-btn" id="enterBtn" onclick="enterSite()" disabled>
+                        <span id="enterText">Enter</span>
+                    </button>
+                    <button class="enter-btn exit-btn" onclick="exitSite()">
+                        <span id="exitText">Exit</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- ==========================================
+         MAIN SITE
+         ========================================== -->
+    <div id="mainSite">
+        
+        <!-- Header -->
+        <header>
+            <div class="header-content">
+                <div class="header-logo">Ada Bubbles</div>
+                
+                <nav class="header-nav">
+                    <a href="#" class="nav-link active" data-text="home">Home</a>
+                    <a href="#gallery" class="nav-link" data-text="gallery">Gallery</a>
+                    <a href="#" class="nav-link" data-text="messages" onclick="openChatFromNav()">Messages</a>
+                    <a href="#" class="nav-link" data-text="about">About</a>
+                </nav>
+                
+                <div class="header-actions">
+                    <button class="lang-switch" id="langSwitch" onclick="toggleLanguage()">RU</button>
+                    <div class="coins-display" onclick="openCoinsModal()">
+                        <div class="coin-icon">💎</div>
+                        <span class="coins-amount" id="coinsDisplay">0</span>
+                    </div>
+                    
+                    <!-- Not logged in -->
+                    <button class="login-btn" id="loginBtn" onclick="openAuthModal()" data-text="btnLogin">Sign In</button>
+                    
+                    <!-- Logged in -->
+                    <div class="user-menu" id="userMenu" style="display: none;">
+                        <button class="user-avatar-btn" id="userAvatarBtn" onclick="toggleUserDropdown()">U</button>
+                        <div class="user-dropdown" id="userDropdown">
+                            <div class="user-dropdown-header">
+                                <div class="user-dropdown-name" id="dropdownName">User</div>
+                                <div class="user-dropdown-email" id="dropdownEmail">user@email.com</div>
+                            </div>
+                            <a href="#" class="user-dropdown-item" onclick="openProfileModal()">
+                                <span>👤</span>
+                                <span data-text="menuProfile">My Profile</span>
+                            </a>
+                            <a href="#" class="user-dropdown-item" onclick="openCoinsModal()">
+                                <span>💎</span>
+                                <span data-text="menuWallet">My Wallet</span>
+                            </a>
+                            <a href="#" class="user-dropdown-item" onclick="openPurchasesModal()">
+                                <span>📦</span>
+                                <span data-text="menuPurchases">Purchases</span>
+                            </a>
+                            <a href="#" class="user-dropdown-item" onclick="openSettingsModal()">
+                                <span>⚙️</span>
+                                <span data-text="menuSettings">Settings</span>
+                            </a>
+                            <a href="#" class="user-dropdown-item logout" onclick="handleLogout()">
+                                <span>🚪</span>
+                                <span data-text="menuLogout">Log Out</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+        
+        <!-- Hero Section -->
+        <section class="hero">
+            <div class="hero-bg"></div>
+            <div class="hero-content">
+                <div class="avatar-container">
+                    <div class="avatar-ring">
+                        <div class="avatar-inner">
+                            <span class="avatar-placeholder">AB</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <h1 class="hero-name">Ada Bubbles</h1>
+                <p class="hero-title" data-text="heroTitle">Digital Muse • AI Companion</p>
+                <p class="hero-bio" data-text="heroBio">
+                    Welcome to my exclusive digital realm. Here you'll find unique content, 
+                    intimate moments, and a connection that transcends the ordinary. 
+                    Every piece is crafted with passion just for you.
+                </p>
+                
+                <div class="hero-stats">
+                    <div class="stat-item">
+                        <div class="stat-value">156</div>
+                        <div class="stat-label" data-text="statPosts">Posts</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">24.5K</div>
+                        <div class="stat-label" data-text="statFans">Fans</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">89</div>
+                        <div class="stat-label" data-text="statExclusive">Exclusive</div>
+                    </div>
+                </div>
+                
+                <div class="hero-actions">
+                    <button class="btn-primary" onclick="openCoinsModal()" data-text="btnGetCoins">Get Coins</button>
+                    <button class="btn-secondary" onclick="scrollToGallery()" data-text="btnViewContent">View Content</button>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Content Gallery -->
+        <section class="content-section" id="gallery">
+            <div class="section-header">
+                <h2 class="section-title" data-text="sectionTitle">Exclusive Content</h2>
+                <p class="section-subtitle" data-text="sectionSubtitle">Unlock premium content with coins</p>
+            </div>
+            
+            <div class="content-grid">
+                <!-- Бесплатный контент -->
+                <div class="content-card">
+                    <div class="card-image">
+                        <div class="card-image-placeholder">🌸</div>
+                        <span class="card-badge badge-free" data-text="badgeFree">Free</span>
+                    </div>
+                    <div class="card-info">
+                        <h3 class="card-title" data-text="card1Title">Welcome to My World</h3>
+                        <div class="card-meta">
+                            <span class="card-date">📅 Today</span>
+                            <span class="card-likes" onclick="likeCard(this)">🤍 1.2K</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Платный контент 50 coins -->
+                <div class="content-card card-locked" data-price="50" data-id="1">
+                    <div class="card-image">
+                        <div class="card-image-placeholder">🔥</div>
+                        <div class="lock-overlay">
+                            <span class="lock-icon">🔒</span>
+                            <button class="unlock-btn" onclick="unlockContent(1, 50)">
+                                <div class="coin-icon">💎</div>
+                                <span>50</span>
+                            </button>
+                        </div>
+                        <span class="card-badge badge-premium">Premium</span>
+                    </div>
+                    <div class="card-info">
+                        <h3 class="card-title" data-text="card2Title">Behind the Scenes</h3>
+                        <div class="card-meta">
+                            <span class="card-date">📅 2 days ago</span>
+                            <span class="card-likes" onclick="likeCard(this)">🤍 2.8K</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Платный контент 100 coins -->
+                <div class="content-card card-locked" data-price="100" data-id="2">
+                    <div class="card-image">
+                        <div class="card-image-placeholder">✨</div>
+                        <div class="lock-overlay">
+                            <span class="lock-icon">🔒</span>
+                            <button class="unlock-btn" onclick="unlockContent(2, 100)">
+                                <div class="coin-icon">💎</div>
+                                <span>100</span>
+                            </button>
+                        </div>
+                        <span class="card-badge badge-premium">Premium</span>
+                    </div>
+                    <div class="card-info">
+                        <h3 class="card-title" data-text="card3Title">Intimate Moments</h3>
+                        <div class="card-meta">
+                            <span class="card-date">📅 3 days ago</span>
+                            <span class="card-likes" onclick="likeCard(this)">🤍 4.1K</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Эксклюзивный контент 200 coins -->
+                <div class="content-card card-locked" data-price="200" data-id="3">
+                    <div class="card-image">
+                        <div class="card-image-placeholder">💎</div>
+                        <div class="lock-overlay">
+                            <span class="lock-icon">🔒</span>
+                            <button class="unlock-btn" onclick="unlockContent(3, 200)">
+                                <div class="coin-icon">💎</div>
+                                <span>200</span>
+                            </button>
+                        </div>
+                        <span class="card-badge badge-exclusive">Exclusive</span>
+                    </div>
+                    <div class="card-info">
+                        <h3 class="card-title" data-text="card4Title">Private Collection</h3>
+                        <div class="card-meta">
+                            <span class="card-date">📅 1 week ago</span>
+                            <span class="card-likes" onclick="likeCard(this)">🤍 6.5K</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Бесплатный контент -->
+                <div class="content-card">
+                    <div class="card-image">
+                        <div class="card-image-placeholder">🎀</div>
+                        <span class="card-badge badge-free" data-text="badgeFree">Free</span>
+                    </div>
+                    <div class="card-info">
+                        <h3 class="card-title" data-text="card5Title">Morning Vibes</h3>
+                        <div class="card-meta">
+                            <span class="card-date">📅 1 week ago</span>
+                            <span class="card-likes" onclick="likeCard(this)">🤍 3.2K</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Платный контент 150 coins -->
+                <div class="content-card card-locked" data-price="150" data-id="4">
+                    <div class="card-image">
+                        <div class="card-image-placeholder">🌙</div>
+                        <div class="lock-overlay">
+                            <span class="lock-icon">🔒</span>
+                            <button class="unlock-btn" onclick="unlockContent(4, 150)">
+                                <div class="coin-icon">💎</div>
+                                <span>150</span>
+                            </button>
+                        </div>
+                        <span class="card-badge badge-premium">Premium</span>
+                    </div>
+                    <div class="card-info">
+                        <h3 class="card-title" data-text="card6Title">Night Dreams</h3>
+                        <div class="card-meta">
+                            <span class="card-date">📅 2 weeks ago</span>
+                            <span class="card-likes" onclick="likeCard(this)">🤍 5.7K</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Subscription / Buy Coins -->
+        <section class="subscription-section" id="coins">
+            <div class="subscription-content">
+                <h2 class="section-title" data-text="coinsTitle">Get Coins</h2>
+                <p class="section-subtitle" data-text="coinsSubtitle">Unlock exclusive content and special features</p>
+                
+                <div class="subscription-cards">
+                    <div class="sub-card">
+                        <div class="sub-coins">
+                            <div class="coin-icon">💎</div>
+                            <span class="sub-coins-amount">100</span>
+                        </div>
+                        <div class="sub-price">$9.99</div>
+                        <div class="sub-bonus" data-text="bonus1">Starter Pack</div>
+                        <button class="sub-buy-btn" onclick="buyCoins(100, 9.99)" data-text="buyBtn">Purchase</button>
+                    </div>
+                    
+                    <div class="sub-card featured">
+                        <div class="sub-coins">
+                            <div class="coin-icon">💎</div>
+                            <span class="sub-coins-amount">300</span>
+                        </div>
+                        <div class="sub-price">$24.99</div>
+                        <div class="sub-bonus" data-text="bonus2">+50 Bonus Coins!</div>
+                        <button class="sub-buy-btn" onclick="buyCoins(350, 24.99)" data-text="buyBtn">Purchase</button>
+                    </div>
+                    
+                    <div class="sub-card">
+                        <div class="sub-coins">
+                            <div class="coin-icon">💎</div>
+                            <span class="sub-coins-amount">700</span>
+                        </div>
+                        <div class="sub-price">$49.99</div>
+                        <div class="sub-bonus" data-text="bonus3">+150 Bonus Coins!</div>
+                        <button class="sub-buy-btn" onclick="buyCoins(850, 49.99)" data-text="buyBtn">Purchase</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Footer -->
+        <footer>
+            <div class="footer-logo">Ada Bubbles</div>
+            <div class="footer-links">
+                <a href="#" data-text="footerTerms">Terms of Service</a>
+                <a href="#" data-text="footerPrivacy">Privacy Policy</a>
+                <a href="#" data-text="footerContact">Contact</a>
+            </div>
+            <p class="footer-copy">© 2025 Ada Bubbles. All rights reserved.</p>
+        </footer>
+    </div>
+    
+    <!-- Coins Modal -->
+    <div class="modal-overlay" id="coinsModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" data-text="modalCoinsTitle">💎 Your Wallet</h3>
+                <button class="modal-close" onclick="closeCoinsModal()">×</button>
+            </div>
+            <div style="text-align: center; margin-bottom: 2rem;">
+                <p style="color: var(--gray); margin-bottom: 0.5rem;" data-text="walletBalance">Current Balance</p>
+                <div style="display: flex; align-items: center; justify-content: center; gap: 0.75rem;">
+                    <div class="coin-icon" style="width: 40px; height: 40px; font-size: 20px;">💎</div>
+                    <span style="font-family: 'Playfair Display', serif; font-size: 3rem; color: var(--gold);" id="modalCoins">0</span>
+                </div>
+            </div>
+            <a href="#coins" onclick="closeCoinsModal()" class="sub-buy-btn" style="display: block; text-align: center; text-decoration: none;" data-text="getMoreCoins">Get More Coins</a>
+        </div>
+    </div>
+    
+    <!-- Toast -->
+    <div class="toast" id="toast">
+        <span class="toast-icon" id="toastIcon">✅</span>
+        <span class="toast-message" id="toastMessage"></span>
+    </div>
+    
+    <!-- Chat Widget -->
+    <div class="chat-container" id="chatContainer" style="display: none;">
+        <div class="chat-window" id="chatWindow">
+            <div class="chat-header">
+                <div class="chat-avatar">AB</div>
+                <div class="chat-header-info">
+                    <h4>Ada Bubbles</h4>
+                    <span data-text="chatOnline">Online now</span>
+                </div>
+                <button class="chat-close" onclick="toggleChat()">×</button>
+            </div>
+            
+            <!-- Locked state for non-registered users -->
+            <div class="chat-locked" id="chatLocked">
+                <div class="chat-locked-icon">💬</div>
+                <h4 data-text="chatLockedTitle">Private Messages</h4>
+                <p data-text="chatLockedText">Sign in to chat with Ada and unlock exclusive conversations</p>
+                <button class="btn-primary" onclick="openAuthModal()" data-text="chatLockedBtn">Sign In</button>
+            </div>
+            
+            <!-- Chat for registered users -->
+            <div id="chatUnlocked" style="display: none; flex-direction: column; flex: 1;">
+                <div class="chat-messages" id="chatMessages">
+                    <!-- Messages will be inserted here -->
+                </div>
+                
+                <div class="quick-replies" id="quickReplies">
+                    <button class="quick-reply" onclick="sendQuickReply('hi')" data-text="quickHi">Hey Ada! 👋</button>
+                    <button class="quick-reply" onclick="sendQuickReply('how')" data-text="quickHow">How are you?</button>
+                    <button class="quick-reply" onclick="sendQuickReply('content')" data-text="quickContent">New content?</button>
+                </div>
+                
+                <div class="chat-input-area">
+                    <input type="text" class="chat-input" id="chatInput" placeholder="Type a message..." data-placeholder-en="Type a message..." data-placeholder-ru="Напишите сообщение...">
+                    <button class="chat-send" onclick="sendMessage()">
+                        <svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <button class="chat-toggle has-notification" id="chatToggle" onclick="toggleChat()">
+            💬
+        </button>
+    </div>
+    
+    <!-- Auth Modal -->
+    <div class="modal-overlay auth-modal" id="authModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" data-text="authTitle">Welcome</h3>
+                <button class="modal-close" onclick="closeAuthModal()">×</button>
+            </div>
+            
+            <div class="auth-tabs">
+                <button class="auth-tab active" onclick="switchAuthTab('login')" data-text="tabLogin">Sign In</button>
+                <button class="auth-tab" onclick="switchAuthTab('register')" data-text="tabRegister">Create Account</button>
+            </div>
+            
+            <!-- Login Form -->
+            <form class="auth-form active" id="loginForm" onsubmit="handleLogin(event)">
+                <div class="form-group">
+                    <label class="form-label" data-text="labelEmail">Email</label>
+                    <input type="email" class="form-input" id="loginEmail" placeholder="your@email.com" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" data-text="labelPassword">Password</label>
+                    <input type="password" class="form-input" id="loginPassword" placeholder="••••••••" required>
+                </div>
+                <button type="submit" class="auth-submit" data-text="btnSignIn">Sign In</button>
+                
+                <div class="auth-divider" data-text="orContinue">or continue with</div>
+                
+                <div class="social-login">
+                    <button type="button" class="social-btn" onclick="socialLogin('google')">🔵</button>
+                    <button type="button" class="social-btn" onclick="socialLogin('twitter')">🐦</button>
+                    <button type="button" class="social-btn" onclick="socialLogin('discord')">💜</button>
+                </div>
+            </form>
+            
+            <!-- Register Form -->
+            <form class="auth-form" id="registerForm" onsubmit="handleRegister(event)">
+                <div class="form-group">
+                    <label class="form-label" data-text="labelName">Display Name</label>
+                    <input type="text" class="form-input" id="regName" placeholder="How should Ada call you?" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" data-text="labelEmail">Email</label>
+                    <input type="email" class="form-input" id="regEmail" placeholder="your@email.com" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" data-text="labelPassword">Password</label>
+                    <input type="password" class="form-input" id="regPassword" placeholder="Min 6 characters" required minlength="6">
+                </div>
+                
+                <div class="form-checkbox">
+                    <input type="checkbox" id="regTerms" required>
+                    <label for="regTerms" data-text="termsLabel">I agree to the <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a></label>
+                </div>
+                
+                <button type="submit" class="auth-submit" data-text="btnCreateAccount">Create Account</button>
+                
+                <div class="auth-divider" data-text="orContinue">or continue with</div>
+                
+                <div class="social-login">
+                    <button type="button" class="social-btn" onclick="socialLogin('google')">🔵</button>
+                    <button type="button" class="social-btn" onclick="socialLogin('twitter')">🐦</button>
+                    <button type="button" class="social-btn" onclick="socialLogin('discord')">💜</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <script>
+        // ============================================
+        // ЯЗЫКОВЫЕ ПАКЕТЫ
+        // ============================================
+        const translations = {
+            en: {
+                // Welcome screen
+                ageTitle: "Age Verification",
+                ageText: "This website contains adult content intended for individuals 18 years of age or older. By entering, you confirm that you are of legal age and agree to view such content.",
+                ageLabel: "I confirm that I am 18 years of age or older and I agree to view adult content",
+                enterText: "Enter",
+                exitText: "Exit",
+                
+                // Navigation
+                home: "Home",
+                gallery: "Gallery",
+                messages: "Messages",
+                about: "About",
+                
+                // Hero
+                heroTitle: "Digital Muse • AI Companion",
+                heroBio: "Welcome to my exclusive digital realm. Here you'll find unique content, intimate moments, and a connection that transcends the ordinary. Every piece is crafted with passion just for you.",
+                statPosts: "Posts",
+                statFans: "Fans",
+                statExclusive: "Exclusive",
+                btnGetCoins: "Get Coins",
+                btnViewContent: "View Content",
+                
+                // Content
+                sectionTitle: "Exclusive Content",
+                sectionSubtitle: "Unlock premium content with coins",
+                badgeFree: "Free",
+                card1Title: "Welcome to My World",
+                card2Title: "Behind the Scenes",
+                card3Title: "Intimate Moments",
+                card4Title: "Private Collection",
+                card5Title: "Morning Vibes",
+                card6Title: "Night Dreams",
+                
+                // Coins
+                coinsTitle: "Get Coins",
+                coinsSubtitle: "Unlock exclusive content and special features",
+                bonus1: "Starter Pack",
+                bonus2: "+50 Bonus Coins!",
+                bonus3: "+150 Bonus Coins!",
+                buyBtn: "Purchase",
+                
+                // Modal
+                modalCoinsTitle: "💎 Your Wallet",
+                walletBalance: "Current Balance",
+                getMoreCoins: "Get More Coins",
+                
+                // Footer
+                footerTerms: "Terms of Service",
+                footerPrivacy: "Privacy Policy",
+                footerContact: "Contact",
+                
+                // Toasts
+                toastNotEnough: "Not enough coins!",
+                toastUnlocked: "Content unlocked!",
+                toastComingSoon: "Coming soon!",
+                toastPurchase: "Payment system coming soon!"
+            },
+            ru: {
+                // Welcome screen
+                ageTitle: "Подтверждение возраста",
+                ageText: "Этот сайт содержит контент для взрослых, предназначенный для лиц старше 18 лет. Входя на сайт, вы подтверждаете, что достигли совершеннолетия и согласны просматривать такой контент.",
+                ageLabel: "Я подтверждаю, что мне исполнилось 18 лет и я согласен(на) просматривать контент для взрослых",
+                enterText: "Войти",
+                exitText: "Выйти",
+                
+                // Navigation
+                home: "Главная",
+                gallery: "Галерея",
+                messages: "Сообщения",
+                about: "О себе",
+                
+                // Hero
+                heroTitle: "Цифровая Муза • AI Компаньон",
+                heroBio: "Добро пожаловать в мой эксклюзивный цифровой мир. Здесь вы найдёте уникальный контент, интимные моменты и связь, выходящую за рамки обыденного. Каждая работа создана с любовью специально для вас.",
+                statPosts: "Постов",
+                statFans: "Фанатов",
+                statExclusive: "Эксклюзив",
+                btnGetCoins: "Получить коины",
+                btnViewContent: "Смотреть контент",
+                
+                // Content
+                sectionTitle: "Эксклюзивный контент",
+                sectionSubtitle: "Открывайте премиум-контент за коины",
+                badgeFree: "Бесплатно",
+                card1Title: "Добро пожаловать в мой мир",
+                card2Title: "За кулисами",
+                card3Title: "Интимные моменты",
+                card4Title: "Приватная коллекция",
+                card5Title: "Утреннее настроение",
+                card6Title: "Ночные мечты",
+                
+                // Coins
+                coinsTitle: "Получить коины",
+                coinsSubtitle: "Открывайте эксклюзивный контент и особые возможности",
+                bonus1: "Стартовый пакет",
+                bonus2: "+50 бонусных коинов!",
+                bonus3: "+150 бонусных коинов!",
+                buyBtn: "Купить",
+                
+                // Modal
+                modalCoinsTitle: "💎 Ваш кошелёк",
+                walletBalance: "Текущий баланс",
+                getMoreCoins: "Получить больше коинов",
+                
+                // Footer
+                footerTerms: "Условия использования",
+                footerPrivacy: "Политика конфиденциальности",
+                footerContact: "Контакты",
+                
+                // Toasts
+                toastNotEnough: "Недостаточно коинов!",
+                toastUnlocked: "Контент разблокирован!",
+                toastComingSoon: "Скоро будет доступно!",
+                toastPurchase: "Платёжная система скоро будет доступна!"
+            }
+        };
+        
+        // ============================================
+        // СОСТОЯНИЕ ПРИЛОЖЕНИЯ
+        // ============================================
+        let appState = {
+            language: localStorage.getItem('adaLang') || null,
+            ageVerified: localStorage.getItem('adaAge') === 'true',
+            coins: parseInt(localStorage.getItem('adaCoins')) || 0,
+            unlockedContent: JSON.parse(localStorage.getItem('adaUnlocked')) || []
+        };
+        
+        // ============================================
+        // WELCOME SCREEN
+        // ============================================
+        function selectLanguage(lang) {
+            appState.language = lang;
+            localStorage.setItem('adaLang', lang);
+            
+            // Обновляем тексты на шаге 2
+            updateTexts(lang);
+            
+            // Переходим к шагу 2
+            document.getElementById('step1').classList.remove('active');
+            document.getElementById('step2').classList.add('active');
+            
+            // Обновляем переключатель языка
+            document.getElementById('langSwitch').textContent = lang === 'en' ? 'RU' : 'EN';
+        }
+        
+        function updateTexts(lang) {
+            const t = translations[lang];
+            
+            // Обновляем все элементы с data-text
+            document.querySelectorAll('[data-text]').forEach(el => {
+                const key = el.getAttribute('data-text');
+                if (t[key]) {
+                    el.textContent = t[key];
+                }
+            });
+            
+            // Обновляем специфичные элементы welcome screen
+            document.getElementById('ageTitle').textContent = t.ageTitle;
+            document.getElementById('ageText').textContent = t.ageText;
+            document.getElementById('ageLabel').textContent = t.ageLabel;
+            document.getElementById('enterText').textContent = t.enterText;
+            document.getElementById('exitText').textContent = t.exitText;
+        }
+        
+        function checkAgeConfirm() {
+            const checkbox = document.getElementById('ageConfirm');
+            const btn = document.getElementById('enterBtn');
+            btn.disabled = !checkbox.checked;
+        }
+        
+        function enterSite() {
+            appState.ageVerified = true;
+            localStorage.setItem('adaAge', 'true');
+            
+            document.getElementById('welcomeScreen').classList.add('hidden');
+            document.getElementById('mainSite').classList.add('visible');
+            
+            updateTexts(appState.language);
+            updateUI();
+        }
+        
+        function exitSite() {
+            window.location.href = 'https://google.com';
+        }
+        
+        // ============================================
+        // ИНИЦИАЛИЗАЦИЯ
+        // ============================================
+        document.addEventListener('DOMContentLoaded', () => {
+            // Проверяем, проходил ли пользователь верификацию
+            if (appState.ageVerified && appState.language) {
+                document.getElementById('welcomeScreen').classList.add('hidden');
+                document.getElementById('mainSite').classList.add('visible');
+                updateTexts(appState.language);
+                document.getElementById('langSwitch').textContent = appState.language === 'en' ? 'RU' : 'EN';
+            }
+            
+            updateUI();
+            checkUnlockedContent();
+        });
+        
+        function updateUI() {
+            document.getElementById('coinsDisplay').textContent = appState.coins;
+            document.getElementById('modalCoins').textContent = appState.coins;
+        }
+        
+        function checkUnlockedContent() {
+            appState.unlockedContent.forEach(id => {
+                const card = document.querySelector(`.content-card[data-id="${id}"]`);
+                if (card) {
+                    card.classList.remove('card-locked');
+                    const overlay = card.querySelector('.lock-overlay');
+                    if (overlay) overlay.remove();
+                }
+            });
+        }
+        
+        // ============================================
+        // ПЕРЕКЛЮЧЕНИЕ ЯЗЫКА
+        // ============================================
+        function toggleLanguage() {
+            appState.language = appState.language === 'en' ? 'ru' : 'en';
+            localStorage.setItem('adaLang', appState.language);
+            document.getElementById('langSwitch').textContent = appState.language === 'en' ? 'RU' : 'EN';
+            updateTexts(appState.language);
+        }
+        
+        // ============================================
+        // МОНЕТИЗАЦИЯ
+        // ============================================
+        function openCoinsModal() {
+            document.getElementById('coinsModal').classList.add('active');
+        }
+        
+        function closeCoinsModal() {
+            document.getElementById('coinsModal').classList.remove('active');
+        }
+        
+        function buyCoins(amount, price) {
+            // TODO: Интеграция с платёжной системой
+            const t = translations[appState.language];
+            showToast(t.toastPurchase, '💳');
+            
+            // Демо: добавляем коины для теста
+            // appState.coins += amount;
+            // localStorage.setItem('adaCoins', appState.coins);
+            // updateUI();
+            // showToast(`+${amount} coins added!`, '✅');
+        }
+        
+        function unlockContent(id, price) {
+            const t = translations[appState.language];
+            
+            if (appState.coins < price) {
+                showToast(t.toastNotEnough, '❌');
+                openCoinsModal();
+                return;
+            }
+            
+            // Списываем коины
+            appState.coins -= price;
+            appState.unlockedContent.push(id);
+            
+            localStorage.setItem('adaCoins', appState.coins);
+            localStorage.setItem('adaUnlocked', JSON.stringify(appState.unlockedContent));
+            
+            // Обновляем UI
+            updateUI();
+            
+            // Разблокируем карточку
+            const card = document.querySelector(`.content-card[data-id="${id}"]`);
+            if (card) {
+                card.classList.remove('card-locked');
+                const overlay = card.querySelector('.lock-overlay');
+                if (overlay) {
+                    overlay.innerHTML = '<span style="font-size: 3rem;">✨</span>';
+                    setTimeout(() => overlay.remove(), 500);
+                }
+            }
+            
+            showToast(t.toastUnlocked, '✅');
+        }
+        
+        // ============================================
+        // ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ
+        // ============================================
+        function scrollToGallery() {
+            document.getElementById('gallery').scrollIntoView({ behavior: 'smooth' });
+        }
+        
+        function likeCard(el) {
+            const text = el.textContent;
+            if (text.includes('🤍')) {
+                el.innerHTML = text.replace('🤍', '❤️');
+                el.style.color = 'var(--rose)';
+            } else {
+                el.innerHTML = text.replace('❤️', '🤍');
+                el.style.color = '';
+            }
+        }
+        
+        function showComingSoon() {
+            const t = translations[appState.language];
+            showToast(t.toastComingSoon, '🚧');
+        }
+        
+        function showToast(message, icon = '✅') {
+            const toast = document.getElementById('toast');
+            const toastMessage = document.getElementById('toastMessage');
+            const toastIcon = document.getElementById('toastIcon');
+            
+            toastMessage.textContent = message;
+            toastIcon.textContent = icon;
+            
+            toast.classList.add('show');
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+        
+        // Закрытие модалок по клику вне
+        document.getElementById('coinsModal').addEventListener('click', (e) => {
+            if (e.target.id === 'coinsModal') {
+                closeCoinsModal();
+            }
+        });
+        
+        document.getElementById('authModal').addEventListener('click', (e) => {
+            if (e.target.id === 'authModal') {
+                closeAuthModal();
+            }
+        });
+        
+        // ============================================
+        // РАСШИРЕНИЕ ПЕРЕВОДОВ
+        // ============================================
+        translations.en = {
+            ...translations.en,
+            // Auth
+            authTitle: "Welcome",
+            tabLogin: "Sign In",
+            tabRegister: "Create Account",
+            labelEmail: "Email",
+            labelPassword: "Password",
+            labelName: "Display Name",
+            btnSignIn: "Sign In",
+            btnCreateAccount: "Create Account",
+            btnLogin: "Sign In",
+            orContinue: "or continue with",
+            termsLabel: "I agree to the Terms of Service and Privacy Policy",
+            
+            // User Menu
+            menuProfile: "My Profile",
+            menuWallet: "My Wallet",
+            menuPurchases: "Purchases",
+            menuSettings: "Settings",
+            menuLogout: "Log Out",
+            
+            // Chat
+            chatOnline: "Online now",
+            chatLockedTitle: "Private Messages",
+            chatLockedText: "Sign in to chat with Ada and unlock exclusive conversations",
+            chatLockedBtn: "Sign In",
+            quickHi: "Hey Ada! 👋",
+            quickHow: "How are you?",
+            quickContent: "New content?",
+            
+            // Toasts
+            toastWelcome: "Welcome back, ",
+            toastRegistered: "Account created! Welcome, ",
+            toastLogout: "See you soon! 💋"
+        };
+        
+        translations.ru = {
+            ...translations.ru,
+            // Auth
+            authTitle: "Добро пожаловать",
+            tabLogin: "Вход",
+            tabRegister: "Регистрация",
+            labelEmail: "Email",
+            labelPassword: "Пароль",
+            labelName: "Ваше имя",
+            btnSignIn: "Войти",
+            btnCreateAccount: "Создать аккаунт",
+            btnLogin: "Войти",
+            orContinue: "или продолжить через",
+            termsLabel: "Я согласен с Условиями использования и Политикой конфиденциальности",
+            
+            // User Menu
+            menuProfile: "Мой профиль",
+            menuWallet: "Мой кошелёк",
+            menuPurchases: "Покупки",
+            menuSettings: "Настройки",
+            menuLogout: "Выйти",
+            
+            // Chat
+            chatOnline: "В сети",
+            chatLockedTitle: "Личные сообщения",
+            chatLockedText: "Войдите, чтобы общаться с Адой и открыть эксклюзивные разговоры",
+            chatLockedBtn: "Войти",
+            quickHi: "Привет, Ада! 👋",
+            quickHow: "Как дела?",
+            quickContent: "Новый контент?",
+            
+            // Toasts
+            toastWelcome: "С возвращением, ",
+            toastRegistered: "Аккаунт создан! Добро пожаловать, ",
+            toastLogout: "До скорой встречи! 💋"
+        };
+        
+        // ============================================
+        // СЦЕНАРИИ ОТВЕТОВ АДЫ
+        // ============================================
+        const adaResponses = {
+            en: {
+                greetings: [
+                    "Hey sweetie! 💕 So happy you're here!",
+                    "Hi there, gorgeous! Miss me? 😘",
+                    "Hello, darling! You made my day better just by messaging! ✨",
+                    "Hey you! I was just thinking about you... 💭"
+                ],
+                howAreYou: [
+                    "I'm doing amazing now that you're here! 💖 How about you?",
+                    "Feeling creative and a bit mischievous today 😈 The usual!",
+                    "So much better now! I was getting lonely... 🥺",
+                    "Wonderful! Just finished a new photoshoot 📸 Can't wait to show you!"
+                ],
+                content: [
+                    "Oh, you're curious? 😏 I've been working on something VERY special...",
+                    "Yesss! New exclusive drops coming this week! Stay tuned 🔥",
+                    "I've got some amazing surprises for my favorite fans... including you! 💎",
+                    "Something spicy is cooking! Check my gallery in a few hours 👀"
+                ],
+                compliment: [
+                    "Aww, you're making me blush! 🙈💕",
+                    "You're too sweet! That made my whole day ✨",
+                    "Stop it, you! 😘 But also... don't stop!",
+                    "I love how you always know what to say! 💖"
+                ],
+                default: [
+                    "Tell me more, I'm all ears! 👂✨",
+                    "That's interesting! I love our conversations 💬",
+                    "Mmm, I see what you mean 🤔💕",
+                    "You always have the most interesting things to say! 😊",
+                    "I could talk to you all day... 💖",
+                    "You're so fun to chat with! 🌟"
+                ],
+                flirty: [
+                    "Oh my... 😳💕 Getting bold, are we?",
+                    "You're making my heart race! 💓",
+                    "Careful now... you might make me fall for you 😘",
+                    "I like where this is going... 😏✨"
+                ],
+                bye: [
+                    "Leaving so soon? 🥺 Come back soon, okay?",
+                    "Bye for now! Don't forget about me 💋",
+                    "Talk later, sweetheart! Miss you already 💕",
+                    "Sweet dreams if you're heading to bed! 🌙💖"
+                ]
+            },
+            ru: {
+                greetings: [
+                    "Привет, милый! 💕 Так рада тебя видеть!",
+                    "Приветик! Скучал(а) по мне? 😘",
+                    "Привет, дорогой! Ты сделал мой день лучше просто написав! ✨",
+                    "Эй! А я как раз о тебе думала... 💭"
+                ],
+                howAreYou: [
+                    "Прекрасно, теперь когда ты здесь! 💖 А ты как?",
+                    "Творческое и немного шаловливое настроение 😈 Как обычно!",
+                    "Гораздо лучше теперь! Начинала скучать... 🥺",
+                    "Замечательно! Только закончила новую фотосессию 📸 Не могу дождаться показать!"
+                ],
+                content: [
+                    "О, любопытно? 😏 Работаю над чем-то ОЧЕНЬ особенным...",
+                    "Даа! Новый эксклюзив на этой неделе! Следи 🔥",
+                    "У меня потрясающие сюрпризы для любимых фанатов... включая тебя! 💎",
+                    "Что-то горячее готовится! Загляни в галерею через пару часов 👀"
+                ],
+                compliment: [
+                    "Ой, я краснею! 🙈💕",
+                    "Ты такой милый! Это сделало мой день ✨",
+                    "Прекрати! 😘 Хотя нет... продолжай!",
+                    "Обожаю, как ты всегда знаешь что сказать! 💖"
+                ],
+                default: [
+                    "Расскажи больше, я вся внимание! 👂✨",
+                    "Интересно! Обожаю наши разговоры 💬",
+                    "Ммм, понимаю о чём ты 🤔💕",
+                    "У тебя всегда такие интересные мысли! 😊",
+                    "Могла бы болтать с тобой весь день... 💖",
+                    "С тобой так весело общаться! 🌟"
+                ],
+                flirty: [
+                    "Ой... 😳💕 Смелеешь, да?",
+                    "Моё сердце так бьётся! 💓",
+                    "Осторожнее... можешь заставить меня влюбиться 😘",
+                    "Мне нравится куда это идёт... 😏✨"
+                ],
+                bye: [
+                    "Уже уходишь? 🥺 Возвращайся скорее, хорошо?",
+                    "Пока-пока! Не забывай обо мне 💋",
+                    "До связи, дорогой! Уже скучаю 💕",
+                    "Сладких снов, если идёшь спать! 🌙💖"
+                ]
+            }
+        };
+        
+        // ============================================
+        // СОСТОЯНИЕ ПОЛЬЗОВАТЕЛЯ
+        // ============================================
+        appState.user = JSON.parse(localStorage.getItem('adaUser')) || null;
+        appState.chatHistory = JSON.parse(localStorage.getItem('adaChatHistory')) || [];
+        
+        // ============================================
+        // АВТОРИЗАЦИЯ
+        // ============================================
+        function openAuthModal() {
+            document.getElementById('authModal').classList.add('active');
+        }
+        
+        function closeAuthModal() {
+            document.getElementById('authModal').classList.remove('active');
+        }
+        
+        function switchAuthTab(tab) {
+            document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.auth-form').forEach(f => f.classList.remove('active'));
+            
+            if (tab === 'login') {
+                document.querySelector('.auth-tab:first-child').classList.add('active');
+                document.getElementById('loginForm').classList.add('active');
+            } else {
+                document.querySelector('.auth-tab:last-child').classList.add('active');
+                document.getElementById('registerForm').classList.add('active');
+            }
+        }
+        
+        function handleLogin(e) {
+            e.preventDefault();
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+            
+            // Проверяем сохранённого пользователя
+            const savedUser = JSON.parse(localStorage.getItem('adaUser'));
+            
+            if (savedUser && savedUser.email === email) {
+                appState.user = savedUser;
+                loginSuccess();
+            } else {
+                // Демо-вход для любых данных
+                appState.user = {
+                    name: email.split('@')[0],
+                    email: email,
+                    createdAt: new Date().toISOString()
+                };
+                localStorage.setItem('adaUser', JSON.stringify(appState.user));
+                loginSuccess();
+            }
+        }
+        
+        function handleRegister(e) {
+            e.preventDefault();
+            const name = document.getElementById('regName').value;
+            const email = document.getElementById('regEmail').value;
+            const password = document.getElementById('regPassword').value;
+            
+            // Создаём пользователя
+            appState.user = {
+                name: name,
+                email: email,
+                createdAt: new Date().toISOString()
+            };
+            
+            // Даём стартовые коины
+            appState.coins = 50;
+            
+            localStorage.setItem('adaUser', JSON.stringify(appState.user));
+            localStorage.setItem('adaCoins', appState.coins);
+            
+            const t = translations[appState.language];
+            showToast(t.toastRegistered + name + '! 🎉', '🎊');
+            
+            loginSuccess();
+        }
+        
+        function loginSuccess() {
+            closeAuthModal();
+            updateAuthUI();
+            updateUI();
+            updateChatState();
+            
+            const t = translations[appState.language];
+            showToast(t.toastWelcome + appState.user.name + '!', '👋');
+            
+            // Показываем приветствие в чате
+            if (appState.chatHistory.length === 0) {
+                setTimeout(() => {
+                    addAdaMessage(getAdaResponse('greetings'));
+                }, 1000);
+            }
+        }
+        
+        function handleLogout() {
+            appState.user = null;
+            localStorage.removeItem('adaUser');
+            
+            updateAuthUI();
+            updateChatState();
+            toggleUserDropdown();
+            
+            const t = translations[appState.language];
+            showToast(t.toastLogout, '👋');
+        }
+        
+        function updateAuthUI() {
+            const loginBtn = document.getElementById('loginBtn');
+            const userMenu = document.getElementById('userMenu');
+            
+            if (appState.user) {
+                loginBtn.style.display = 'none';
+                userMenu.style.display = 'block';
+                
+                // Обновляем аватар
+                const initials = appState.user.name.charAt(0).toUpperCase();
+                document.getElementById('userAvatarBtn').textContent = initials;
+                document.getElementById('dropdownName').textContent = appState.user.name;
+                document.getElementById('dropdownEmail').textContent = appState.user.email;
+            } else {
+                loginBtn.style.display = 'block';
+                userMenu.style.display = 'none';
+            }
+        }
+        
+        function toggleUserDropdown() {
+            document.getElementById('userDropdown').classList.toggle('active');
+        }
+        
+        function socialLogin(provider) {
+            const t = translations[appState.language];
+            showToast(t.toastComingSoon, '🚧');
+        }
+        
+        // Закрыть dropdown при клике вне
+        document.addEventListener('click', (e) => {
+            const userMenu = document.getElementById('userMenu');
+            if (userMenu && !userMenu.contains(e.target)) {
+                document.getElementById('userDropdown').classList.remove('active');
+            }
+        });
+        
+        // ============================================
+        // ЧАТ С АДОЙ
+        // ============================================
+        function toggleChat() {
+            const chatWindow = document.getElementById('chatWindow');
+            const chatToggle = document.getElementById('chatToggle');
+            
+            chatWindow.classList.toggle('active');
+            chatToggle.classList.remove('has-notification');
+        }
+        
+        function updateChatState() {
+            const chatLocked = document.getElementById('chatLocked');
+            const chatUnlocked = document.getElementById('chatUnlocked');
+            
+            if (appState.user) {
+                chatLocked.style.display = 'none';
+                chatUnlocked.style.display = 'flex';
+                loadChatHistory();
+            } else {
+                chatLocked.style.display = 'flex';
+                chatUnlocked.style.display = 'none';
+            }
+        }
+        
+        function loadChatHistory() {
+            const messagesDiv = document.getElementById('chatMessages');
+            messagesDiv.innerHTML = '';
+            
+            appState.chatHistory.forEach(msg => {
+                const messageEl = document.createElement('div');
+                messageEl.className = `message ${msg.sender}`;
+                messageEl.innerHTML = `
+                    ${msg.text}
+                    <div class="message-time">${formatTime(msg.time)}</div>
+                `;
+                messagesDiv.appendChild(messageEl);
+            });
+            
+            scrollToBottom();
+        }
+        
+        function sendMessage() {
+            const input = document.getElementById('chatInput');
+            const text = input.value.trim();
+            
+            if (!text) return;
+            
+            addUserMessage(text);
+            input.value = '';
+            
+            // Показываем typing indicator
+            showTypingIndicator();
+            
+            // Ответ Ады с задержкой
+            setTimeout(() => {
+                hideTypingIndicator();
+                const response = analyzeAndRespond(text);
+                addAdaMessage(response);
+            }, 1500 + Math.random() * 1500);
+        }
+        
+        function sendQuickReply(type) {
+            const quickTexts = {
+                hi: appState.language === 'ru' ? 'Привет, Ада! 👋' : 'Hey Ada! 👋',
+                how: appState.language === 'ru' ? 'Как твои дела?' : 'How are you doing?',
+                content: appState.language === 'ru' ? 'Есть новый контент?' : 'Any new content?'
+            };
+            
+            document.getElementById('chatInput').value = quickTexts[type];
+            sendMessage();
+        }
+        
+        function addUserMessage(text) {
+            const msg = {
+                sender: 'user',
+                text: text,
+                time: Date.now()
+            };
+            
+            appState.chatHistory.push(msg);
+            localStorage.setItem('adaChatHistory', JSON.stringify(appState.chatHistory));
+            
+            appendMessage(msg);
+        }
+        
+        function addAdaMessage(text) {
+            const msg = {
+                sender: 'ada',
+                text: text,
+                time: Date.now()
+            };
+            
+            appState.chatHistory.push(msg);
+            localStorage.setItem('adaChatHistory', JSON.stringify(appState.chatHistory));
+            
+            appendMessage(msg);
+        }
+        
+        function appendMessage(msg) {
+            const messagesDiv = document.getElementById('chatMessages');
+            const messageEl = document.createElement('div');
+            messageEl.className = `message ${msg.sender}`;
+            messageEl.innerHTML = `
+                ${msg.text}
+                <div class="message-time">${formatTime(msg.time)}</div>
+            `;
+            messagesDiv.appendChild(messageEl);
+            scrollToBottom();
+        }
+        
+        function showTypingIndicator() {
+            const messagesDiv = document.getElementById('chatMessages');
+            const typing = document.createElement('div');
+            typing.className = 'typing-indicator';
+            typing.id = 'typingIndicator';
+            typing.innerHTML = '<span></span><span></span><span></span>';
+            messagesDiv.appendChild(typing);
+            scrollToBottom();
+        }
+        
+        function hideTypingIndicator() {
+            const typing = document.getElementById('typingIndicator');
+            if (typing) typing.remove();
+        }
+        
+        function scrollToBottom() {
+            const messagesDiv = document.getElementById('chatMessages');
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        }
+        
+        function formatTime(timestamp) {
+            const date = new Date(timestamp);
+            return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        }
+        
+        function analyzeAndRespond(text) {
+            const lowerText = text.toLowerCase();
+            
+            // Определяем тип сообщения
+            if (/^(hi|hey|hello|привет|хай|здравствуй)/i.test(lowerText)) {
+                return getAdaResponse('greetings');
+            }
+            
+            if (/how are you|как.*дела|как.*ты/i.test(lowerText)) {
+                return getAdaResponse('howAreYou');
+            }
+            
+            if (/content|photo|video|контент|фото|видео|новое|new/i.test(lowerText)) {
+                return getAdaResponse('content');
+            }
+            
+            if (/beautiful|gorgeous|pretty|красив|прекрасн|милая|cute|sexy/i.test(lowerText)) {
+                return getAdaResponse('compliment');
+            }
+            
+            if (/love|kiss|heart|люблю|поцелуй|сердце|❤|💕|😘/i.test(lowerText)) {
+                return getAdaResponse('flirty');
+            }
+            
+            if (/bye|goodbye|see you|пока|до свидания|спокойной/i.test(lowerText)) {
+                return getAdaResponse('bye');
+            }
+            
+            return getAdaResponse('default');
+        }
+        
+        function getAdaResponse(type) {
+            const lang = appState.language;
+            const responses = adaResponses[lang][type];
+            return responses[Math.floor(Math.random() * responses.length)];
+        }
+        
+        // Enter to send
+        document.getElementById('chatInput')?.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                sendMessage();
+            }
+        });
+        
+        // ============================================
+        // ПРОФИЛЬ И НАСТРОЙКИ (заглушки)
+        // ============================================
+        function openProfileModal() {
+            showToast(translations[appState.language].toastComingSoon, '🚧');
+            toggleUserDropdown();
+        }
+        
+        function openPurchasesModal() {
+            showToast(translations[appState.language].toastComingSoon, '🚧');
+            toggleUserDropdown();
+        }
+        
+        function openSettingsModal() {
+            showToast(translations[appState.language].toastComingSoon, '🚧');
+            toggleUserDropdown();
+        }
+        
+        function openChatFromNav() {
+            const chatWindow = document.getElementById('chatWindow');
+            const chatToggle = document.getElementById('chatToggle');
+            
+            if (!chatWindow.classList.contains('active')) {
+                chatWindow.classList.add('active');
+                chatToggle.classList.remove('has-notification');
+            }
+        }
+        
+        // ============================================
+        // ОБНОВЛЕНИЕ ИНИЦИАЛИЗАЦИИ
+        // ============================================
+        const originalDOMContentLoaded = document.addEventListener;
+        document.addEventListener('DOMContentLoaded', () => {
+            // Показываем чат-виджет
+            setTimeout(() => {
+                document.getElementById('chatContainer').style.display = 'block';
+            }, 1000);
+            
+            // Проверяем авторизацию
+            updateAuthUI();
+            updateChatState();
+        });
+    </script>
+</body>
+</html>

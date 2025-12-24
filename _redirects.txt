@@ -1,0 +1,7 @@
+# Netlify redirects
+
+# SPA fallback - все несуществующие страницы на 404
+/*    /404.html   404
+
+# Если будешь использовать кастомный домен, раскомментируй:
+# https://ada-bubbles.netlify.app/*  https://ada-bubbles.com/:splat  301!
