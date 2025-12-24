@@ -1,0 +1,285 @@
+﻿<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>Ада — сцена с игрой</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    html, body {
+      margin: 0; padding: 0;
+      background: #000;
+      font-family: Arial, sans-serif;
+      display: flex; justify-content: center; align-items: center;
+      height: 100vh; overflow: hidden;
+    }
+    #screen {
+      position: relative;
+      width: 540px; height: 960px;
+      background: url('bg_start.jpg') center/cover no-repeat;
+      border-radius: 16px;
+      box-shadow: 0 0 30px rgba(0,0,0,0.7);
+      overflow: hidden;
+    }
+    #ada {
+      position: absolute;
+      bottom: 195px; left: 60px;
+      width: 380px; height: 360px;
+      object-fit: contain; z-index: 2;
+    }
+    #bubble {
+      position: absolute;
+      bottom: 345px; left: 310px;
+      width: 220px; height: 110px;
+      background: url('bubble.png') center/contain no-repeat;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 16px; font-weight: bold; color: #fff;
+      text-align: center; padding: 10px; z-index: 3;
+    }
+    #history {
+      position: absolute;
+      top: 40px; right: 30px; width: 180px;
+      display: flex; flex-direction: column; gap: 6px;
+      z-index: 1;
+    }
+    .msg {
+      display: flex; align-items: center;
+      font-size: 12px; color: #fff;
+      text-shadow: 0 0 2px #000;
+    }
+    .msg img {
+      width: 36px; height: 36px;
+      border-radius: 50%; margin-right: 6px;
+    }
+    #controls {
+      position: absolute;
+      bottom: 20px; left: 30px; width: 480px;
+      display: flex; flex-direction: column; gap: 10px;
+      z-index: 4;
+    }
+    button {
+      width: 100%; padding: 16px;
+      border: none; border-radius: 10px;
+      font-size: 15px; font-weight: bold;
+      color: #fff; background: #2b5278; cursor: pointer;
+    }
+    canvas {
+      position: absolute; top: 0; left: 0;
+      width: 100%; height: 100%;
+      display: none; background: #ffd1dc; z-index: 5;
+    }
+    #snakeText {
+      position: absolute; top: 35px; left: 50%;
+      transform: translateX(-50%);
+      font-size: 18px; font-weight: bold;
+      color: #2b5278; background: rgba(255,255,255,0.8);
+      padding: 8px 16px; border-radius: 12px;
+      z-index: 6; display: none;
+    }
+    #gameControls {
+      position: absolute; bottom: 30px; left: 50%;
+      transform: translateX(-50%);
+      display: none;
+      grid-template-columns: repeat(3, 1fr); gap: 4px; width: 240px; z-index: 6;
+    }
+    #gameControls button {
+      font-size: 22px; font-weight: bold;
+      padding: 12px 0;
+      background: #2b5278;
+      border: none; color: #fff; border-radius: 8px;
+    }
+    #nextBtn {
+      position: absolute; top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      padding: 16px 32px; font-size: 20px;
+      background: #fff; color: #ff4f68;
+      border-radius: 12px; font-weight: bold;
+      box-shadow: 0 4px 14px rgba(0,0,0,.5);
+      display: none; z-index: 10;
+    }
+  </style>
+</head>
+<body>
+  <div id="screen">
+    <img id="ada" src="ada.png" alt="Ада">
+    <div id="bubble">Ада: Приветики! Да, меня зовут Ада!</div>
+    <div id="history"></div>
+    <div id="controls">
+      <button id="q1" onclick="askQuestion('q1','Откуда ты приехала?','Из Падуи. Родной город, но здесь всё ощущается свежо.','q1b')">Откуда ты приехала?</button>
+      <button id="q2" onclick="askQuestion('q2','Чем занимаешься?','Я дизайнер — упаковки, иллюстрации, иногда даже одежду придумываю.','q2b')">Чем занимаешься?</button>
+      <button onclick="startSnake()">Чтоже я тут болтаю… давай помогу!</button>
+    </div>
+    <div id="snakeText">Собери 5 кубиков, чтобы помочь Аде</div>
+    <canvas id="game"></canvas>
+    <div id="gameControls">
+      <button></button><button onclick="changeDir(0,-1)">↑</button><button></button>
+      <button onclick="changeDir(-1,0)">←</button><button></button><button onclick="changeDir(1,0)">→</button>
+      <button></button><button onclick="changeDir(0,1)">↓</button><button></button>
+    </div>
+    <button id="nextBtn" onclick="afterSnake()">Далее</button>
+  </div>
+
+<script>
+function askQuestion(id, userText, adaText, nextId) {
+  document.getElementById(id).remove();
+  const h1 = document.createElement('button');
+  h1.textContent = nextId === 'q1b' ? 'Нравится ли тебе это место?' : 'Есть ли у тебя хобби?';
+  h1.onclick = () => {
+    addDialog('Ты', h1.textContent, 'Ада', nextId === 'q1b'
+      ? 'Очень! Тут спокойнее, но всё вдохновляет.'
+      : 'Люблю керамику и чаи. Иногда рисую, иногда леплю.');
+    h1.remove();
+  };
+  Object.assign(h1.style, {
+    background: "#2b5278", color: "#fff", fontWeight: "bold",
+    borderRadius: "10px", padding: "16px", border: "none",
+    width: "100%", fontSize: "15px"
+  });
+  document.getElementById('controls').insertBefore(h1, document.getElementById('controls').lastElementChild);
+  addDialog('Ты', userText, 'Ада', adaText);
+}
+
+function addDialog(person1, text1, person2, text2) {
+  const h1 = document.createElement('div');
+  h1.className = 'msg';
+  h1.innerHTML = `<span>${text1}</span>`;
+  document.getElementById('history').appendChild(h1);
+  const h2 = document.createElement('div');
+  h2.className = 'msg';
+  h2.innerHTML = `<img src="ada_avatar.png"><span>${text2}</span>`;
+  document.getElementById('history').appendChild(h2);
+  document.getElementById('bubble').textContent = `${person2}: ${text2}`;
+}
+
+let cv = document.getElementById('game'), ctx = cv.getContext('2d');
+let snake, dir, score, timer;
+let targets = [];
+
+function startSnake() {
+  addDialog('Ты','Чтоже я тут болтаю… давай помогу!','Ада','У тебя руки не из глины? Тогда, может, поможешь мне с коробками 😄');
+  cv.width = 360; cv.height = 600;
+  cv.style.display = 'block';
+  document.getElementById('gameControls').style.display = 'grid';
+  document.getElementById('snakeText').style.display = 'block';
+  document.getElementById('controls').style.display = 'none';
+
+  snake = [{x:12,y:10}, {x:11,y:10}, {x:10,y:10}];
+  dir = {x:1, y:0};
+  score = 0;
+
+    regenerateTargets();
+  draw();
+  timer = setInterval(update, 240);
+  setInterval(regenerateTargets, 10000);
+}
+
+function regenerateTargets() {
+  targets = [];
+  for (let i = 0; i < 2; i++) {
+    let tx, ty, valid = false;
+    while (!valid) {
+      tx = Math.floor(Math.random() * 36);
+      ty = Math.floor(Math.random() * 50); // избегаем нижней зоны
+      valid = !snake.some(s => s.x === tx && s.y === ty);
+    }
+    targets.push({x: tx, y: ty});
+  }
+}
+
+function changeDir(dx, dy) {
+  if (Math.abs(dir.x + dx) !== 2 && Math.abs(dir.y + dy) !== 2) {
+    dir = {x: dx, y: dy};
+  }
+}
+
+function draw() {
+  ctx.clearRect(0, 0, cv.width, cv.height);
+
+  // тело змейки
+  ctx.fillStyle = "#ff4f68";
+  snake.forEach(s => {
+    ctx.fillRect(s.x * 10, s.y * 10, 10, 10);
+  });
+
+  // рисуем "Т"-образный хвост
+  let tail = snake[snake.length - 1];
+  let beforeTail = snake[snake.length - 2];
+  let dx = tail.x - beforeTail.x;
+  let dy = tail.y - beforeTail.y;
+
+  // ушки в зависимости от направления
+  if (Math.abs(dx) === 1) {
+    // хвост горизонтальный → ушки сверху и снизу
+    ctx.fillRect(tail.x * 10, (tail.y - 1) * 10, 10, 10);
+    ctx.fillRect(tail.x * 10, (tail.y + 1) * 10, 10, 10);
+  } else if (Math.abs(dy) === 1) {
+    // хвост вертикальный → ушки слева и справа
+    ctx.fillRect((tail.x - 1) * 10, tail.y * 10, 10, 10);
+    ctx.fillRect((tail.x + 1) * 10, tail.y * 10, 10, 10);
+  }
+
+  // кубики целей
+  ctx.fillStyle = "#333";
+  targets.forEach(f => {
+    ctx.fillRect(f.x * 10, f.y * 10, 10, 10);
+  });
+
+  // текст
+  ctx.fillStyle = "#000";
+  ctx.font = "18px Arial";
+  ctx.fillText(`Коробок: ${score}/5`, 5, 20);
+}
+
+function update() {
+  let head = { x: snake[0].x + dir.x, y: snake[0].y + dir.y };
+  head.x = (head.x + 36) % 36;
+  head.y = (head.y + 60) % 60;
+
+  // столкновение с телом
+  if (snake.some(s => s.x === head.x && s.y === head.y)) {
+    return endGame(false);
+  }
+
+  snake.unshift(head);
+
+  // проверка сбора целей
+  let collected = false;
+  targets = targets.filter(f => {
+    if (f.x === head.x && f.y === head.y) {
+      collected = true;
+      return false;
+    }
+    return true;
+  });
+
+  if (collected) {
+    score++;
+    // добавим два блока к хвосту
+    for (let i = 0; i < 2; i++) {
+      const last = snake[snake.length - 1];
+      snake.push({ x: last.x, y: last.y });
+    }
+    if (score >= 5) return endGame(true);
+    regenerateTargets();
+  } else {
+    snake.pop();
+  }
+
+  draw();
+}
+
+function endGame(win) {
+  clearInterval(timer);
+  cv.style.display = 'none';
+  document.getElementById('gameControls').style.display = 'none';
+  document.getElementById('snakeText').style.display = 'none';
+  if (win) document.getElementById('nextBtn').style.display = 'block';
+}
+
+function afterSnake() {
+  document.getElementById('nextBtn').style.display = 'none';
+  addDialog('Ты', 'Рад помочь!', 'Ада', 'Спасибо за помощь! Заходи на чай!');
+  document.body.style.backgroundImage = "url('bg_thanks.jpg')";
+}
+</script>
+</body>
+</html>

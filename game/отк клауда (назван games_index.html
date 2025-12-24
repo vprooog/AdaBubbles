@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game Center | Ada Bubbles</title>
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎮</text></svg>">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --gold: #d4af37;
+            --gold-light: #f4e4bc;
+            --rose: #e91e63;
+            --black: #0a0a0a;
+            --black-card: #141414;
+            --white: #fafafa;
+            --gray: #888;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background: var(--black);
+            color: var(--white);
+            min-height: 100vh;
+        }
+        
+        header {
+            padding: 1.5rem 2rem;
+            border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            background: linear-gradient(135deg, var(--gold-light), var(--gold));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-decoration: none;
+        }
+        
+        .back-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--gray);
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: color 0.3s ease;
+        }
+        
+        .back-btn:hover {
+            color: var(--gold);
+        }
+        
+        main {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 3rem 2rem;
+        }
+        
+        .page-title {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+        
+        .page-title h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(135deg, var(--white), var(--gold-light));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .page-title p {
+            color: var(--gray);
+        }
+        
+        .games-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+        }
+        
+        .game-card {
+            background: var(--black-card);
+            border: 1px solid rgba(212, 175, 55, 0.2);
+            border-radius: 12px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .game-card:hover {
+            border-color: var(--gold);
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+        
+        .game-cover {
+            height: 180px;
+            background: linear-gradient(135deg, rgba(233, 30, 99, 0.2), rgba(212, 175, 55, 0.2));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4rem;
+        }
+        
+        .game-info {
+            padding: 1.5rem;
+        }
+        
+        .game-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.25rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .game-desc {
+            color: var(--gray);
+            font-size: 0.85rem;
+            line-height: 1.6;
+            margin-bottom: 1rem;
+        }
+        
+        .game-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .game-badge {
+            padding: 0.3rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        
+        .badge-free {
+            background: rgba(76, 175, 80, 0.2);
+            color: #4ade80;
+        }
+        
+        .badge-coming {
+            background: rgba(212, 175, 55, 0.2);
+            color: var(--gold);
+        }
+        
+        .play-btn {
+            padding: 0.5rem 1.25rem;
+            background: linear-gradient(135deg, var(--gold), #b8960c);
+            border: none;
+            border-radius: 4px;
+            color: var(--black);
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 600;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+        
+        .play-btn:hover {
+            box-shadow: 0 0 20px rgba(212, 175, 55, 0.4);
+        }
+        
+        .play-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .coming-soon {
+            text-align: center;
+            padding: 3rem;
+            color: var(--gray);
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <a href="/" class="logo">Ada Bubbles</a>
+        <a href="/" class="back-btn">← Back to Home</a>
+    </header>
+    
+    <main>
+        <div class="page-title">
+            <h1>🎮 Game Center</h1>
+            <p>Play games and explore Ada's world</p>
+        </div>
+        
+        <div class="games-grid">
+            <!-- Game 1 -->
+            <div class="game-card">
+                <div class="game-cover">🐍</div>
+                <div class="game-info">
+                    <h3 class="game-title">Ada's Snake Adventure</h3>
+                    <p class="game-desc">Help Ada collect items in this classic snake game with a twist!</p>
+                    <div class="game-meta">
+                        <span class="game-badge badge-free">Free</span>
+                        <a href="mission1.html" class="play-btn">Play Now</a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Game 2 -->
+            <div class="game-card">
+                <div class="game-cover">💝</div>
+                <div class="game-info">
+                    <h3 class="game-title">Love Quest</h3>
+                    <p class="game-desc">An interactive story where your choices shape the narrative.</p>
+                    <div class="game-meta">
+                        <span class="game-badge badge-coming">Coming Soon</span>
+                        <button class="play-btn" disabled>Soon</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Game 3 -->
+            <div class="game-card">
+                <div class="game-cover">🎰</div>
+                <div class="game-info">
+                    <h3 class="game-title">Lucky Spin</h3>
+                    <p class="game-desc">Try your luck and win exclusive rewards!</p>
+                    <div class="game-meta">
+                        <span class="game-badge badge-coming">Coming Soon</span>
+                        <button class="play-btn" disabled>Soon</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</body>
+</html>

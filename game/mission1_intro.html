@@ -1,0 +1,69 @@
+﻿<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>Миссия 1 — Вступление</title>
+  <style>
+    html, body {
+      margin: 0; padding: 0;
+      background: #000;
+      display: flex; justify-content: center; align-items: center;
+      height: 100vh; font-family: 'Segoe UI', sans-serif;
+    }
+
+    #wrapper {
+      width: 360px; height: 640px;
+      background: url('scene1_room.jpg') center/cover no-repeat;
+      border-radius: 20px; overflow: hidden;
+      position: relative; color: #fff;
+      box-shadow: 0 0 30px rgba(255,255,255,0.3);
+    }
+
+    #textBox {
+      position: absolute;
+      top: 40px; left: 20px; right: 20px;
+      background: rgba(0,0,0,0.6);
+      padding: 14px;
+      font-size: 17px; line-height: 1.4;
+      border-radius: 12px;
+    }
+
+    #nextBtn {
+      position: absolute;
+      bottom: 30px; left: 50%;
+      transform: translateX(-50%);
+      width: 220px; height: 60px;
+      background: url('btn_continue.png') center/contain no-repeat;
+      border: none; cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <div id="wrapper">
+    <div id="textBox" id="dialog">
+      «Сижу у себя в комнате. И вдруг слышен звук тормозов под окном...»
+    </div>
+    <button id="nextBtn" onclick="nextScene()"></button>
+  </div>
+
+  <script>
+    let scene = 1;
+    function nextScene() {
+      scene++;
+      const bg = document.getElementById('wrapper');
+      const txt = document.getElementById('textBox');
+
+      if (scene === 2) {
+        bg.style.backgroundImage = "url('scene2_window.jpg')";
+        txt.textContent = "Ого, машина... Девушка разгружает вещи. Похоже, у меня новая соседка.";
+      } else if (scene === 3) {
+        bg.style.backgroundImage = "url('scene3_yard.jpg')";
+        txt.textContent = "Пора выйти и поздороваться!";
+        document.getElementById('nextBtn').onclick = () => {
+          location.href = 'mission1_game.html';
+        };
+      }
+    }
+  </script>
+</body>
+</html>

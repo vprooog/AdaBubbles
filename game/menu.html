@@ -1,0 +1,130 @@
+﻿<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>Ada Bubbles — Меню</title>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: #000;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      font-family: 'Segoe UI', sans-serif;
+    }
+
+    #gameWrapper {
+      width: 360px;
+      height: 640px;
+      background: url('bg_menu.jpg') no-repeat center;
+      background-size: cover;
+      border-radius: 20px;
+      overflow: hidden;
+      position: relative;
+      box-shadow: 0 0 30px rgba(255, 255, 255, 0.3);
+    }
+
+    #buttonContainer {
+      position: absolute;
+      bottom: 40px;
+      width: 100%;
+      text-align: center;
+    }
+
+    .menu-button {
+      background: transparent;
+      border: none;
+      margin: 10px;
+      cursor: pointer;
+      width: 240px;
+      height: 70px;
+    }
+
+    .menu-button img {
+      width: 100%;
+      height: auto;
+      transition: transform 0.2s;
+    }
+
+    .menu-button img:hover {
+      transform: scale(1.05);
+    }
+
+    #soundToggle {
+      position: absolute;
+      top: 40px;
+      right: 20px;
+      width: 48px;
+      height: 48px;
+      cursor: pointer;
+      z-index: 10;
+    }
+
+    #soundToggle img {
+      width: 100%;
+      height: auto;
+      border-radius: 50%;
+      transition: transform 0.2s;
+    }
+
+    #soundToggle img:hover {
+      transform: scale(1.1);
+    }
+  </style>
+</head>
+<body>
+  <div id="gameWrapper">
+    <div id="soundToggle" onclick="toggleSound()">
+      <img id="soundBtn" src="btn_sound_on.png" alt="Звук">
+    </div>
+
+    <div id="buttonContainer">
+      <button class="menu-button" onclick="startMission()">
+        <img src="btn_start.png" alt="Начать игру">
+      </button>
+      <button class="menu-button" onclick="openMissions()">
+        <img src="btn_missions.png" alt="Миссии">
+      </button>
+      <button class="menu-button" onclick="openRewards()">
+        <img src="btn_rewards.png" alt="Награды">
+      </button>
+      <button class="menu-button" onclick="showCoins()">
+        <img src="btn_coins.png" alt="Баланс">
+      </button>
+    </div>
+  </div>
+
+  <script>
+    function startMission() {
+      location.href = 'mission1_game.html';
+    }
+
+    function openMissions() {
+      location.href = 'missions.html';
+    }
+
+    function openRewards() {
+      location.href = 'rewards.html';
+    }
+
+    function showCoins() {
+      alert('Ваш баланс: 50 монет');
+    }
+
+    function toggleSound() {
+      const current = localStorage.getItem('soundOn') === 'true';
+      const next = !current;
+      localStorage.setItem('soundOn', next);
+      document.getElementById('soundBtn').src = next ? 'btn_sound_on.png' : 'btn_sound_off.png';
+    }
+
+    window.onload = () => {
+      const savedSound = localStorage.getItem('soundOn');
+      const status = savedSound === 'false' ? false : true;
+      document.getElementById('soundBtn').src = status ? 'btn_sound_on.png' : 'btn_sound_off.png';
+    };
+  </script>
+</body>
+</html>

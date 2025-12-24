@@ -1,0 +1,187 @@
+﻿<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>Награда — Обнимашки и чай</title>
+  <style>
+    html, body {
+      margin: 0; padding: 0;
+      background: #000;
+      display: flex; justify-content: center; align-items: center;
+      height: 100vh;
+      font-family: 'Segoe UI', sans-serif;
+    }
+
+    #wrapper {
+      width: 360px; height: 640px;
+      background: url('bg_livingroom.jpg') center/cover no-repeat;
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 0 30px rgba(255,255,255,0.3);
+      position: relative;
+    }
+
+    #boilerZone {
+      position: absolute;
+      top: 40px; left: 20px;
+      width: 60px; height: 252px;
+    }
+
+    #boilerBar {
+      position: absolute;
+      bottom: 0;
+      left: 15px;
+      width: 30px;
+      height: 252px;
+      background: #444;
+      border-radius: 20px;
+      overflow: hidden;
+      display: flex;
+      align-items: flex-end;
+    }
+
+    #boilerFill {
+      width: 100%;
+      background: #f5deb3;
+      height: 0%;
+      transition: height 0.3s;
+    }
+
+    #boilerFrame {
+      position: absolute;
+      top: 0; left: 0;
+      width: 60px; height: 252px;
+      pointer-events: none;
+    }
+
+    #gifScene {
+      position: absolute;
+      top: 40px; left: 90px;
+      width: 180px; height: 360px;
+    }
+
+    #gifScene img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      border-radius: 12px;
+    }
+
+    #speedPanel {
+      position: absolute;
+      top: 40px; right: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .speedBtn {
+      background: transparent;
+      border: none;
+      width: 60px; height: 60px;
+      cursor: pointer;
+    }
+
+    .speedBtn img {
+      width: 100%; height: auto;
+      border-radius: 50%;
+    }
+
+    #resetBtn {
+      position: absolute;
+      bottom: 120px; left: 20px;
+      width: 100px; height: 60px;
+      background: url('btn_reset.png') center/contain no-repeat;
+      border: none;
+      cursor: pointer;
+    }
+
+    #finishBtn {
+      position: absolute;
+      bottom: 40px; left: 50%;
+      transform: translateX(-50%);
+      width: 240px; height: 70px;
+      border: none;
+      background: url('btn_finish.png') center/contain no-repeat;
+      background-size: contain;
+      display: none;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <div id="wrapper">
+    <div id="boilerZone">
+      <div id="boilerBar">
+        <div id="boilerFill"></div>
+      </div>
+      <img id="boilerFrame" src="boiler_frame.png" alt="Колба">
+    </div>
+
+    <div id="gifScene">
+      <img id="currentGif" src="hug_slow.gif" alt="Обнимашки">
+    </div>
+
+    <div id="speedPanel">
+      <button class="speedBtn" onclick="changeSpeed(1)">
+        <img src="btn_speed1.png" alt="1">
+      </button>
+      <button class="speedBtn" onclick="changeSpeed(2)">
+        <img src="btn_speed2.png" alt="2">
+      </button>
+      <button class="speedBtn" onclick="changeSpeed(3)">
+        <img src="btn_speed3.png" alt="3">
+      </button>
+    </div>
+
+    <button id="resetBtn" onclick="resetBoiler()"></button>
+    <button id="finishBtn" onclick="finishMission()"></button>
+  </div>
+
+  <script>
+    let boiler = 0;
+    let interval;
+    let speedRate = 1;
+    let finished = false;
+
+    function changeSpeed(speed) {
+      speedRate = speed;
+      const gifMap = {
+        1: 'hug_slow.gif',
+        2: 'hug_medium.gif',
+        3: 'hug_fast.gif'
+      };
+      if (!finished) {
+        document.getElementById('currentGif').src = gifMap[speed];
+      }
+    }
+
+    function resetBoiler() {
+      if (!finished) {
+        boiler = Math.max(0, boiler - Math.floor(boiler * 0.25));
+        document.getElementById('boilerFill').style.height = boiler + '%';
+      }
+    }
+
+    interval = setInterval(() => {
+      if (finished) return;
+      boiler += speedRate;
+      if (boiler >= 100) {
+        boiler = 100;
+        finished = true;
+        document.getElementById('boilerFill').style.height = '100%';
+        document.getElementById('currentGif').src = 'tea_final.gif';
+        setTimeout(() => {
+          document.getElementById('finishBtn').style.display = 'block';
+        }, 5000);
+        clearInterval(interval);
+      } else {
+        document.getElementById('boilerFill').style.height = boiler + '%';
+      }
+    }, 1000);
+
+    function finishMission() {
+      location.href = 'missions.html';
+    }
+  </script>
+</body>
+</html>
